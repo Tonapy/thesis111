@@ -17,7 +17,6 @@
 \RequirePackage{hyperref} % 超链接支持
 \RequirePackage{titletoc}  % 用于自定义目录格式
 \RequirePackage{titlesec}  % 用于自定义章节标题格式
-
 % 3. 配置英文主字体为 Times New Roman
 \setmainfont{Times New Roman}
 
@@ -245,7 +244,7 @@
 \newenvironment{enabstract}{
     \clearpage
     \phantomsection
-    \addcontentsline{toc}{section}{Abstract}
+    \addcontentsline{toc}{section}{ABSTRACT}
     
     % 设置当前页面样式为摘要页样式
     \thispagestyle{enabstractpage} % 需要定义 enabstractpage 样式
@@ -290,17 +289,29 @@
     \fancyfoot[C]{\thepage} % 页码居中
 }
 
+\renewcommand{\thesection}{\arabic{section}}
+
+% 二级标题编号：1.1
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+
+% 三级标题编号：1.1.1
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
 % 设置章节标题格式
 \titleformat{\section}
-  {\centering\heiti\zihao{3}}{}{0em}{}
+  {\centering\heiti\zihao{3}}{\thesection}{0em}{}
 
 \titleformat{\subsection}
-  {\heiti\zihao{4}}{}{0em}{}
+  {\heiti\zihao{-3}}{\thesubsection}{0em}{}
 
+\titleformat{\subsubsection}
+  {\songti\zihao{-3}}{\thesubsubsection}{0em}{}
 
 % 定义目录的页眉样式
 \fancypagestyle{tablecontents}{
     \fancyhf{}
+    \setlength{\headheight}{11pt}    % 调试页眉内容区域高度
+    \setlength{\headsep}{51pt}       % 调试页眉与正文间距
     \fancyhead[L]{\songti\zihao{-5} 重庆大学本科学生毕业论文（设计）}
     \fancyhead[R]{\songti\zihao{-5} 目录}
     \renewcommand{\headrulewidth}{0.4pt}
@@ -312,7 +323,8 @@
 \renewcommand{\tableofcontents}{%
     \clearpage
     \phantomsection
-    \addcontentsline{toc}{section}{\contentsname}
+    % 添加目录到目录中
+    % \addcontentsline{toc}{section}{\contentsname}
     
     % 设置目录页页眉样式
     \thispagestyle{tablecontents} % 使用和摘要页相同的样式
@@ -320,15 +332,14 @@
     
     % 目录标题：黑体三号居中
     \begin{center}
-        \heiti \zihao{3} 目\quad 录
+        \heiti  \zihao{3} 目\quad 录
     \end{center}
     
-    \vspace{8pt} % 与摘要保持相同的间距
+    \vspace{6.5pt} % 与摘要保持相同的间距
     
-    % 目录正文：宋体小四，固定行距20磅
-    \songti \zihao{-4}
+    % 目录正文：固定行距20磅
     \setlength{\baselineskip}{20pt}
-    
+    \selectfont
     % 开始生成目录
     \@starttoc{toc}
     
@@ -337,28 +348,28 @@
 }
 
 % 设置目录条目格式
-% 一级标题（section）：宋体小四，加粗
+% 一级标题（section）：黑体4号
 \titlecontents{section}
-  [0em] % 左缩进
-  {\addvspace{6pt}\songti\zihao{-4}\bfseries} % 格式
-  {\contentslabel{2em}} % 带编号的标签
-  {} % 无编号的标签
-  {\titlerule*[0.5em]{.}\contentspage} % 页码和引导符
+  [2em] % 左缩进
+  {\addvspace{0pt}\heiti\zihao{4}} % 格式
+  {\contentslabel{1.5em}} % 带编号的标签
+  {\hspace*{-1.5em}} % 无编号的标签
+  {\titlerule*[0.4em]{.}\contentspage} % 页码和引导符
   
-% 二级标题（subsection）：宋体小四，不加粗
+% 二级标题（subsection）：黑体5号
 \titlecontents{subsection}
-  [2em] % 左缩进（比一级标题缩进2em）
-  {\addvspace{4pt}\songti\zihao{-4}} % 格式
-  {\contentslabel{3em}} % 带编号的标签
-  {} % 无编号的标签
-  {\titlerule*[0.5em]{.}\contentspage} % 页码和引导符
+  [2.7em] % 左缩进（比一级标题缩进2em）
+  {\addvspace{0pt}\heiti\zihao{5}} % 格式
+  {\contentslabel{2em}} % 带编号的标签
+  {\hspace*{-2.7em}} % 无编号的标签
+  {\titlerule*[0.6em]{.}\contentspage} % 页码和引导符
 
-% 三级标题（subsubsection）：宋体小四，更小字号
+% 三级标题（subsubsection）：宋体5号
 \titlecontents{subsubsection}
   [4em] % 左缩进（比二级标题再缩进2em）
-  {\addvspace{2pt}\songti\zihao{-4}} % 格式
-  {\contentslabel{4em}} % 带编号的标签
-  {} % 无编号的标签
+  {\addvspace{0pt}\songti\zihao{5}} % 格式
+  {\contentslabel{2.5em}} % 带编号的标签
+  {\hspace*{-4em}} % 无编号的标签
   {\titlerule*[0.5em]{.}\contentspage} % 页码和引导符
 
 % 超链接颜色设置
