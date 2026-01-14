@@ -8,8 +8,14 @@
                 "-interaction=nonstopmode",
                 "-file-line-error",
                 "%DOC%"
-            ],
-            "env": {}
+            ]
+        },
+        {
+            "name": "bibtex",
+            "command": "bibtex",
+            "args": [
+                "%DOCFILE%"
+            ]
         },
         {
             "name": "latexmk",
@@ -18,27 +24,70 @@
                 "-synctex=1",
                 "-interaction=nonstopmode",
                 "-file-line-error",
-                "-pdfxe",
+                "-xelatex",
+                "-bibtex",
                 "-outdir=%OUTDIR%",
                 "%DOC%"
-            ],
-            "env": {}
+            ]
         }
     ],
     "latex-workshop.latex.recipes": [
         {
             "name": "xelatex",
-            "tools": [
-                "xelatex"
-            ]
+            "tools": ["xelatex"]
         },
         {
-            "name": "latexmk (xelatex)",
-            "tools": [
-                "latexmk"
-            ]
+            "name": "xelatex → bibtex → xelatex → xelatex",
+            "tools": ["xelatex", "bibtex", "xelatex", "xelatex"]
+        },
+        {
+            "name": "latexmk (xelatex + bibtex)",
+            "tools": ["latexmk"]
         }
     ],
-    "latex-workshop.latex.recipe.default": "xelatex",
-    "latex-workshop.view.pdf.viewer": "tab"
+    "latex-workshop.latex.recipe.default": "latexmk (xelatex + bibtex)",
+    
+    // 自动编译设置
+    "latex-workshop.latex.autoBuild.run": "onSave",
+    "latex-workshop.latex.autoBuild.interval": 1000,
+    
+    // 清理中间文件
+    "latex-workshop.latex.clean.enabled": true,
+    "latex-workshop.latex.clean.fileTypes": [
+        "*.aux",
+        "*.bbl",
+        "*.blg",
+        "*.idx",
+        "*.ind",
+        "*.lof",
+        "*.lot",
+        "*.out",
+        "*.toc",
+        "*.acn",
+        "*.acr",
+        "*.alg",
+        "*.glg",
+        "*.glo",
+        "*.gls",
+        "*.ist",
+        "*.fls",
+        "*.log",
+        "*.fdb_latexmk",
+        "*.synctex.gz"
+    ],
+    
+    // 编译输出目录
+    "latex-workshop.latex.outDir": "%DIR%/build",
+    
+    // PDF 查看器设置
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.synctex.afterBuild.enabled": true,
+    "latex-workshop.synctex.path": "synctex",
+    
+    // 引用建议设置（支持 bibtex）
+    "latex-workshop.intellisense.citation.type": "bibtex",
+    "latex-workshop.intellisense.citation.format": "cite",
+    "latex-workshop.intellisense.citation.datas": {
+        "bib": "**/*.bib"
+    }
 }
