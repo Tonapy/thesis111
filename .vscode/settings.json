@@ -1,4 +1,7 @@
 {
+    // ------------------------------------------------------------------
+    // 1. 编译工具定义 (Tools)
+    // ------------------------------------------------------------------
     "latex-workshop.latex.tools": [
         {
             "name": "xelatex",
@@ -7,6 +10,7 @@
                 "-synctex=1",
                 "-interaction=nonstopmode",
                 "-file-line-error",
+                "-output-directory=%OUTDIR%", // [新增] 关键参数：指定输出目录
                 "%DOC%"
             ]
         },
@@ -14,7 +18,7 @@
             "name": "bibtex",
             "command": "bibtex",
             "args": [
-                "%DOCFILE%"
+                "%OUTDIR%/%DOCFILE%" // [修改] Bibtex 需要去 build 目录找 .aux 文件
             ]
         },
         {
@@ -24,67 +28,67 @@
                 "-synctex=1",
                 "-interaction=nonstopmode",
                 "-file-line-error",
-                "-xelatex",
-                "-bibtex",
-                "-outdir=%OUTDIR%",
+                "-pdfxe", // [优化] 使用 -pdfxe 替代 -xelatex，这是 latexmk 的标准写法
+                "-outdir=%OUTDIR%", // [关键] 告诉 latexmk 输出目录在哪里
                 "%DOC%"
             ]
         }
     ],
+
+    // ------------------------------------------------------------------
+    // 2. 编译流程 (Recipes)
+    // ------------------------------------------------------------------
     "latex-workshop.latex.recipes": [
         {
-            "name": "xelatex",
+            "name": "latexmk (推荐: 全自动)", // 推荐放在第一个
+            "tools": ["latexmk"]
+        },
+        {
+            "name": "xelatex (仅编译一次)",
             "tools": ["xelatex"]
         },
         {
-            "name": "xelatex → bibtex → xelatex → xelatex",
+            "name": "xelatex -> bibtex -> xelatex*2 (传统链)",
             "tools": ["xelatex", "bibtex", "xelatex", "xelatex"]
-        },
-        {
-            "name": "latexmk (xelatex + bibtex)",
-            "tools": ["latexmk"]
         }
     ],
-    "latex-workshop.latex.recipe.default": "latexmk (xelatex + bibtex)",
+
+    // ------------------------------------------------------------------
+    // 3. 核心设置
+    // ------------------------------------------------------------------
     
-    // 自动编译设置
+    // 默认使用 latexmk，它能自动处理引用和依赖，省心
+    "latex-workshop.latex.recipe.default": "latexmk (推荐: 全自动)",
+    
+    // [核心] 指定输出目录为当前目录下的 build 文件夹
+    "latex-workshop.latex.outDir": "%DIR%/build",
+
+    // 自动编译：保存时触发
     "latex-workshop.latex.autoBuild.run": "onSave",
     "latex-workshop.latex.autoBuild.interval": 1000,
     
-    // 清理中间文件
+    // ------------------------------------------------------------------
+    // 4. 清理与辅助设置
+    // ------------------------------------------------------------------
+    
+    // 清理设置
     "latex-workshop.latex.clean.enabled": true,
+    "latex-workshop.latex.clean.subfolder.enabled": true, // [新增] 允许清理子目录
     "latex-workshop.latex.clean.fileTypes": [
-        "*.aux",
-        "*.bbl",
-        "*.blg",
-        "*.idx",
-        "*.ind",
-        "*.lof",
-        "*.lot",
-        "*.out",
-        "*.toc",
-        "*.acn",
-        "*.acr",
-        "*.alg",
-        "*.glg",
-        "*.glo",
-        "*.gls",
-        "*.ist",
-        "*.fls",
-        "*.log",
-        "*.fdb_latexmk",
-        "*.synctex.gz"
+        "*.aux", "*.bbl", "*.blg", "*.idx", "*.ind", "*.lof", "*.lot", 
+        "*.out", "*.toc", "*.acn", "*.acr", "*.alg", "*.glg", "*.glo", 
+        "*.gls", "*.ist", "*.fls", "*.log", "*.fdb_latexmk", "*.synctex.gz",
+        "*.xdv" // [新增] xelatex 可能产生的中间文件
     ],
     
-    // 编译输出目录
-    "latex-workshop.latex.outDir": "%DIR%/build",
-    
-    // PDF 查看器设置
+    // PDF 阅读器
     "latex-workshop.view.pdf.viewer": "tab",
-    "latex-workshop.synctex.afterBuild.enabled": true,
-    "latex-workshop.synctex.path": "synctex",
     
-    // 引用建议设置（支持 bibtex）
+    // SyncTeX (代码<->PDF跳转)
+    "latex-workshop.synctex.afterBuild.enabled": true,
+    "latex-workshop.synctex.path": "synctex", // 注意：有些系统可能需要完整路径
+    
+    // 智能提示与引用
     "latex-workshop.intellisense.citation.type": "bibtex",
     "latex-workshop.intellisense.citation.format": "cite",
     "latex-workshop.intellisense.citation.datas": {
