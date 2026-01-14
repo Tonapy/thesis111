@@ -52,17 +52,26 @@
 }
 
 % 6. 定义普通页面的页眉样式
-\fancypagestyle{plain}{
-    \fancyhf{}
+\fancypagestyle{fancy}{
+    \fancyhf{} % 清空当前设置
     \fancyhead[L]{\songti\zihao{-5} 重庆大学本科学生毕业论文（设计）}
-    \fancyhead[R]{\songti\zihao{-5} 正文}
+    
+    % 关键修改：这里用 \leftmark 代替了具体的文字
+    \fancyhead[R]{\songti\zihao{-5} \leftmark} 
+    
     \renewcommand{\headrulewidth}{0.4pt}
     \renewcommand{\footrulewidth}{0pt}
     \fancyfoot[C]{\thepage}
 }
 
+\renewcommand{\sectionmark}[1]{%
+    % \markboth{左标记内容}{右标记内容}
+    % \thesection 是序号(如 1), #1 是标题内容(如 绪论)
+    \markboth{\thesection\quad #1}{} 
+}
+
 % 7. 设置全局页面样式
-\pagestyle{plain}
+\pagestyle{fancy}
 
 % 定义封面命令 \makecover
 \newcommand{\makecover}{
@@ -337,14 +346,11 @@
     
     % 目录标题：黑体三号居中
     \begin{center}
-        \heiti  \zihao{3} 目\quad 录
+        \heiti \bfseries \zihao{3} 目\quad 录
     \end{center}
     
-    \vspace{6.5pt} % 与摘要保持相同的间距
-    
-    % 目录正文：固定行距20磅
-    \setlength{\baselineskip}{20pt}
-    \selectfont
+    \vspace{7pt} % 与摘要保持相同的间距
+
     % 开始生成目录
     \@starttoc{toc}
     
@@ -356,7 +362,7 @@
 % 一级标题（section）：黑体4号
 \titlecontents{section}
   [2em] % 左缩进
-  {\addvspace{0pt}\heiti\zihao{4}} % 格式
+  {\addvspace{0pt}\heiti\zihao{4}\setlength{\baselineskip}{20pt}} % 格式
   {\contentslabel{1.5em}} % 带编号的标签
   {\hspace*{-1.5em}} % 无编号的标签
   {\titlerule*[0.4em]{.}\contentspage} % 页码和引导符
@@ -364,7 +370,7 @@
 % 二级标题（subsection）：黑体5号
 \titlecontents{subsection}
   [2.7em] % 左缩进（比一级标题缩进2em）
-  {\addvspace{0pt}\heiti\zihao{5}} % 格式
+  {\addvspace{0pt}\heiti\zihao{5}\setlength{\baselineskip}{20pt}} % 格式
   {\contentslabel{2em}} % 带编号的标签
   {\hspace*{-2.7em}} % 无编号的标签
   {\titlerule*[0.6em]{.}\contentspage} % 页码和引导符
@@ -372,7 +378,7 @@
 % 三级标题（subsubsection）：宋体5号
 \titlecontents{subsubsection}
   [4em] % 左缩进（比二级标题再缩进2em）
-  {\addvspace{0pt}\songti\zihao{5}} % 格式
+  {\addvspace{0pt}\songti\zihao{5}\setlength{\baselineskip}{20pt}} % 格式
   {\contentslabel{2.5em}} % 带编号的标签
   {\hspace*{-4em}} % 无编号的标签
   {\titlerule*[0.5em]{.}\contentspage} % 页码和引导符

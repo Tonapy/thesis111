@@ -1,4 +1,4 @@
-\documentclass{myclass}
+\documentclass[AutoFakeBold=2.5]{myclass}
 \usepackage{lipsum} 
 
 \begin{document}
@@ -53,13 +53,12 @@ The English abstract is typically 300-500 words and is placed after the English 
 
 \setcounter{page}{1} % 重置页码
 \pagenumbering{arabic} % 使用阿拉伯数字页码
-
+\pagestyle{fancy}
 \section{荷载算}
 \subsection{基本载荷取值}
-这里是绪论内容
 
-\subsubsection{哈哈哈哈}
-
+\subsubsection{活载取值}
+根据《荷载规范》，本工程上人屋面活荷载取为 \(q_w = 1.5 KN/m^2\)。
 \subsubsection{测试测试}
 
 \subsection{研究意义}
