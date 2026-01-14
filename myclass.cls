@@ -5,8 +5,12 @@
 
 % 1. 加载基础类 (使用 article，纸张默认为 A4)
 \LoadClass[a4paper, zihao=-4]{ctexart}
-
+\setlength{\parindent}{2em} % 设置全局段落缩进为2em
 % 2. 加载页面布局宏包
+\RequirePackage{unicode-math} % 数学字体支持
+\RequirePackage{amsmath}  % 数学公式支持
+% \RequirePackage{amssymb}  % 数学符号支持 和 unicode-math 冲突，按需选择
+\RequirePackage{tabularx}  % 表格支持
 \RequirePackage{geometry}  % 页面布局
 \RequirePackage{graphicx}  % 图片支持
 \RequirePackage{setspace}  % 行距控制
@@ -15,6 +19,10 @@
 \RequirePackage{hyperref} % 超链接支持
 \RequirePackage{titletoc}  % 用于自定义目录格式
 \RequirePackage{titlesec}  % 用于自定义章节标题格式
+\RequirePackage{booktabs}  % 用于自定义章节标题格式
+\RequirePackage{caption}    % 【新增】用于控制标题格式
+\RequirePackage{etoolbox}   % 【新增】用于自动化设置表格内容字体
+\RequirePackage[square, super, comma, sort&compress]{natbib} % 参考文献支持
 % 3. 配置英文主字体为 Times New Roman
 \setmainfont{Times New Roman}
 
@@ -238,11 +246,13 @@
 \newcommand{\cnkeywords}[1]{
     % 换行并留出间距
     \par \vspace{20pt} 
+    {
     \setlength{\leftskip}{2.2em} % ← 这里调整整行的左缩进
     \noindent
     {\heiti \zihao{-4} 关键词：}
     {\songti \zihao{-4} #1}
-    
+    \par
+    }
     % 确保关键词后正确分页
     \clearpage
 }
@@ -277,10 +287,13 @@
 \newcommand{\enkeywords}[1]{
     % 换行并留出间距
     \par \vspace{20pt} 
-    \setlength{\leftskip}{2.2em} % 与中文保持相同缩进
+    {
+    \setlength{\leftskip}{0em} % 与中文保持相同缩进
     \noindent
     {\rmfamily \bfseries \zihao{-4} Keywords: } % 加粗
     {\rmfamily \zihao{-4} #1} % 不加粗
+    \par
+    }
     
     % 确保关键词后正确分页
     \clearpage
@@ -308,17 +321,19 @@
 
 \newcommand{\sectionbreak}{\clearpage}
 \titleformat{\section}%一级标题另起一页
-  {\vspace*{-5.2pt}\centering\heiti  \zihao{3}}{\thesection}{0.6em}{}  %编号和标题之间的距离为0.5em，顶部距离，强制英文黑体
+  {\vspace*{-5.2pt}\centering\heiti\fontspec{SimHei}\zihao{3}}{\thesection}{0.6em}{}  
+  %编号和标题之间的距离为0.5em，顶部距离，强制英文黑体
 
 \titleformat{\subsection}
-  {\heiti\zihao{-3} }{\thesubsection}{0.6em}{}
+  {\heiti\fontspec{SimHei}\zihao{-3} }{\thesubsection}{0.6em}{}
 
 \titleformat{\subsubsection}
-  {\heiti\zihao{-3} }{\thesubsubsection}{0.6em}{}
+  {\heiti\fontspec{SimHei}\zihao{-3} }{\thesubsubsection}{0.6em}{}
 
 % --- 设置二级标题 (subsection) 的间距 ---
 % \titlespacing{命令}{左缩进}{段前间距}{段后间距}
-\titlespacing{\subsection}{0pt}{0pt}{0pt}
+\titlespacing{\subsection}{0pt}{13pt}{0pt}
+%2级标题换行
 
 % --- 设置三级标题 (subsubsection) 的间距 ---
 \titlespacing{\subsubsection}{0pt}{0pt}{0pt}
@@ -392,4 +407,66 @@
     citecolor=black,       % 文献引用为黑色
     urlcolor=blue,         % 网页链接为蓝色
     bookmarksnumbered=true % 书签带章节编号
+}
+
+
+%% --- 设置公式与正文的间距 ---
+\AtBeginDocument{
+    % 1. 公式上方默认间距
+    \setlength{\abovedisplayskip}{2.5pt} 
+    
+    % 2. 公式下方默认间距
+    \setlength{\belowdisplayskip}{2.5pt}
+    
+    % 3. 公式上方“短行”间距 
+    % (当公式前一行的文字很短，没有碰到公式时，用这个较小的间距)
+    \setlength{\abovedisplayshortskip}{0pt}
+    
+    % 4. 公式下方“短行”间距
+    \setlength{\belowdisplayshortskip}{3pt}
+}
+% 让公式编号跟随章节 (效果：1.1, 1.2, 2.1)
+\numberwithin{equation}{section}
+
+% --- 设置表格全局格式 (表标题 + 表内容) ---
+
+% 1. 设置表标题格式：五号、中文黑体、英文 Times New Roman
+% \DeclareCaptionFont 定义一个新字体命令 \tablecapfont
+% 逻辑：\zihao{5}设置字号 -> \heiti设置中文为黑体 -> \rmfamily强制英文回退到衬线体(即TNR)
+\DeclareCaptionFont{tablecapfont}{\zihao{5}\heiti\rmfamily}
+% 表格编号跟随章节 (效果：表 1.1, 表 1.2)
+\numberwithin{table}{section}
+% 应用到所有表格 (table) 的标题
+\captionsetup[table]{
+    font=tablecapfont, % 使用上面定义的字体
+    labelsep=space,     % 序号和标题之间空一格 (1.1 标题)
+    skip=1pt           % 标题和表格之间的垂直间距
+}
+\setlength{\heavyrulewidth}{0.75pt} % 顶线和底线
+\setlength{\lightrulewidth}{0.5pt}  % 中间线
+% 2. 设置表格内容格式：五号、中文黑体、英文 Times New Roman
+% 使用 etoolbox 的 \AtBeginEnvironment 钩子
+% 每当遇到 \begin{tabular} 时，自动执行后面的字体命令
+\AtBeginEnvironment{tabular}{\zihao{5}\heiti\rmfamily}
+\AtBeginEnvironment{tabularx}{\zihao{5}\heiti\rmfamily}
+
+
+%% --- 设置图片标题格式 ---
+% ==================================================
+%  图片配置 (复制到 myclass.cls 末尾)
+% ==================================================
+
+% 1. 让图片编号跟随章节 (效果：图 1.1, 图 1.2, 图 2.1)
+\numberwithin{figure}{section}
+
+% 2. 设置图片标题格式
+% 复用之前定义的 tablecapfont (五号、黑体、英文TNR)
+% 如果你之前没定义过 tablecapfont，请先补充定义：
+% \DeclareCaptionFont{tablecapfont}{\zihao{5}\heiti\rmfamily}
+
+\captionsetup[figure]{
+    font=tablecapfont, % 使用五号黑体
+    labelsep=space,    % 序号后空一格 (图1.1 标题)
+    skip=0pt,          % 图片和标题之间的距离
+    position=bottom    % 标题通常在下方
 }
