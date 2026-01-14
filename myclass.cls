@@ -5,7 +5,7 @@
 
 % 1. 加载基础类 (使用 article，纸张默认为 A4)
 \LoadClass[a4paper, zihao=-4]{ctexart}
-
+\setlength{\parindent}{2em} % 设置全局段落缩进为2em
 % 2. 加载页面布局宏包
 \RequirePackage{geometry}  % 页面布局
 \RequirePackage{graphicx}  % 图片支持
@@ -238,11 +238,13 @@
 \newcommand{\cnkeywords}[1]{
     % 换行并留出间距
     \par \vspace{20pt} 
+    {
     \setlength{\leftskip}{2.2em} % ← 这里调整整行的左缩进
     \noindent
     {\heiti \zihao{-4} 关键词：}
     {\songti \zihao{-4} #1}
-    
+    \par
+    }
     % 确保关键词后正确分页
     \clearpage
 }
@@ -277,10 +279,13 @@
 \newcommand{\enkeywords}[1]{
     % 换行并留出间距
     \par \vspace{20pt} 
-    \setlength{\leftskip}{2.2em} % 与中文保持相同缩进
+    {
+    \setlength{\leftskip}{0em} % 与中文保持相同缩进
     \noindent
     {\rmfamily \bfseries \zihao{-4} Keywords: } % 加粗
     {\rmfamily \zihao{-4} #1} % 不加粗
+    \par
+    }
     
     % 确保关键词后正确分页
     \clearpage
@@ -308,17 +313,19 @@
 
 \newcommand{\sectionbreak}{\clearpage}
 \titleformat{\section}%一级标题另起一页
-  {\vspace*{-5.2pt}\centering\heiti  \zihao{3}}{\thesection}{0.6em}{}  %编号和标题之间的距离为0.5em，顶部距离，强制英文黑体
+  {\vspace*{-5.2pt}\centering\heiti\fontspec{SimHei}\zihao{3}}{\thesection}{0.6em}{}  
+  %编号和标题之间的距离为0.5em，顶部距离，强制英文黑体
 
 \titleformat{\subsection}
-  {\heiti\zihao{-3} }{\thesubsection}{0.6em}{}
+  {\heiti\fontspec{SimHei}\zihao{-3} }{\thesubsection}{0.6em}{}
 
 \titleformat{\subsubsection}
-  {\heiti\zihao{-3} }{\thesubsubsection}{0.6em}{}
+  {\heiti\fontspec{SimHei}\zihao{-3} }{\thesubsubsection}{0.6em}{}
 
 % --- 设置二级标题 (subsection) 的间距 ---
 % \titlespacing{命令}{左缩进}{段前间距}{段后间距}
-\titlespacing{\subsection}{0pt}{0pt}{0pt}
+\titlespacing{\subsection}{0pt}{13pt}{0pt}
+%2级标题换行
 
 % --- 设置三级标题 (subsubsection) 的间距 ---
 \titlespacing{\subsubsection}{0pt}{0pt}{0pt}
